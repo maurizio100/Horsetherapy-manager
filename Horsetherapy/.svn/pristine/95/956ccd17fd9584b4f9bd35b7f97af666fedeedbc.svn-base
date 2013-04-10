@@ -1,5 +1,0 @@
-package sepm.ss13.e0828.service.exception;
-
-public class NoTherapytypeGivenException extends Exception {
-
-}
