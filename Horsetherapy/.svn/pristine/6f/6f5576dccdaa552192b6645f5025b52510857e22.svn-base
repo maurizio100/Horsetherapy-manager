@@ -1,0 +1,11 @@
+package sepm.ss13.e0828.dao.exceptions;
+
+public class PersistenceException extends Exception {
+
+	private static final String ERRORLABLE = "PersistanceError: ";
+	
+	public PersistenceException(String msg) {
+		super(ERRORLABLE + msg);
+	}
+	
+}

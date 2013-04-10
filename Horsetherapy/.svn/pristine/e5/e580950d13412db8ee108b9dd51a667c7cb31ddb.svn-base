@@ -1,0 +1,11 @@
+package sepm.ss13.e0828.dao;
+
+public class NoClassGivenException extends Exception {
+
+	private static final String NOCLASSERRMESSAGE = "Error: No Object available for operation.";
+	
+	public NoClassGivenException(){
+		super(NOCLASSERRMESSAGE);
+	}
+	
+}

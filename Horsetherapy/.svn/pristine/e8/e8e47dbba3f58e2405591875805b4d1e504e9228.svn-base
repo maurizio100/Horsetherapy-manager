@@ -1,0 +1,33 @@
+package sepm.ss13.e0828.dao;
+
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Client;
+
+public class DBClientDAO implements ClientDAO {
+
+	@Override
+	public void createClient(Client newClient) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<Client> getClients() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateClient(Client updateValues) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteClient(Client delClient) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

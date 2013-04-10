@@ -1,0 +1,121 @@
+package sepm.ss13.e0828.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.domain.HorseSearch;
+import sepm.ss13.e0828.domain.Therapytype;
+
+public class DBHorseDAO implements HorseDAO{
+
+	private PreparedStatement pstmt = null;
+
+	private String createStmt = "Insert into horse(horse_id, horse_name, horse_photo, horse_priceperhour, horse_therapytype, horse_deleted) " +
+			"Values(next value for seq_horse,?,?,?,?,0);";
+	private String deleteStmt = "Update horse set horse_deleted = 1 where horse_id = ?";
+	private String getStmt = "Select * from horse where horse_deleted = 0;";
+
+
+	@Override
+	public boolean createHorse(Horse newHorse) {
+		Connection conn = Connector.getConnection();
+		boolean executed = false;
+		try {
+			pstmt = conn.prepareStatement(createStmt);
+			pstmt.setString(1, newHorse.getHorseName());
+			pstmt.setString(2,  newHorse.getHorsePhoto());
+			pstmt.setFloat(3, newHorse.getHorseTherapyprice());
+			pstmt.setString(4, newHorse.getHorseTherapytype().getText());
+			executed = pstmt.execute();
+			pstmt.close();
+
+		} catch (SQLException e) {
+			if (pstmt != null ){
+				if( !executed ){
+					//TODO parameter index was not right or a connection error
+				}else{
+					//TODO execution error
+				}
+				System.err.println("didnt work!");
+				
+				try { pstmt.close();} 
+				catch (SQLException e1) { e1.printStackTrace(); }
+			}
+			e.printStackTrace();
+		}		
+
+		pstmt = null;
+		Connector.closeConnection();
+		return executed;
+	}
+
+	@Override
+	public List<Horse> getHorses() {
+		Connection conn = Connector.getConnection();
+		ResultSet rs = null;
+		List<Horse> retList = null;
+		Horse h = null;
+		String query = "";
+		query = getStmt; 
+
+		try{
+
+			pstmt = conn.prepareStatement(query);
+			rs = pstmt.executeQuery();
+
+			if( rs != null ){
+				retList = new LinkedList<Horse>();
+
+				while( rs.next() ){
+					h = new Horse();
+					h.setHorseID(rs.getInt(1));
+					h.setHorseName(rs.getString(2));
+					h.setHorsePhoto(rs.getString(3));
+					h.setHorseTherapyprice(rs.getFloat(4));
+					h.setHorseTherapytype(Therapytype.fromString(rs.getString(5)));
+					retList.add(h);
+				}
+
+			}
+
+			rs.close();
+			pstmt.close();
+		}catch ( SQLException e ){
+			//TODO error for something went wrong
+		}
+
+		Connector.closeConnection();
+		return retList;
+	}
+
+	@Override
+	public boolean updateHorse(Horse updateValues) {
+		//TODO updateDomain object??
+		return false;
+
+	}
+
+	@Override
+	public boolean deleteHorse(Horse delHorse) {
+		Connection conn = Connector.getConnection();
+		boolean executed = false;
+
+		try {
+			pstmt = conn.prepareStatement(deleteStmt);
+			pstmt.setInt(1, delHorse.getHorseID());
+			executed = pstmt.execute();
+			
+			pstmt.close();
+		} catch (SQLException e) {
+			// TODO raise an error message 
+		}
+
+		Connector.closeConnection();
+		return executed;
+	}
+}

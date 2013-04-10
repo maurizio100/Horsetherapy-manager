@@ -1,0 +1,455 @@
+package sepm.ss13.e0828.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
+import net.miginfocom.swing.MigLayout;
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.gui.exception.NoCorrectFormatException;
+import sepm.ss13.e0828.gui.exception.UnknownTherapytypeException;
+import sepm.ss13.e0828.service.TherapyManagementService;
+import sepm.ss13.e0828.service.exception.NoHorseIdException;
+import sepm.ss13.e0828.service.exception.NoTherapytypeGivenException;
+
+public class HorseManager extends JPanel {
+
+	private TherapyManagementService servicelayer = null;
+	private List<Horse> horses = null;
+
+	/*================UI components======================= */
+	/* panels */
+	private JPanel panSearch = null;
+	private JPanel panSearchControl = null;
+	private JPanel panHorseOperation = null;
+	private JPanel panCartOperation = null;
+	private JPanel panHorseInformation = null;
+	private JPanel panCenter = null;
+	private JPanel panEast = null;
+	private JScrollPane panHorseList = null;
+
+	/* textfields */
+	private JTextField txtSearchName = null;
+	private JTextField txtSearchPrice = null;
+	private JTextField txtSearchHorseID = null;
+
+	private JTextField txtHorseName = null;
+	private JTextField txtHorsePrice = null;
+	private JTextField txtHorseTherapytype = null;
+	private JTextField txtTherapyDuration = null;
+
+	/* labels */
+	private JLabel lblSearchName = null;
+	private JLabel lblSearchPrice = null;
+	private JLabel lblSearchHorseID = null;
+	private JLabel lblSearchTherapyType = null;
+	private JLabel lblPicture = null;
+
+	private JLabel lblHorseName = null;
+	private JLabel lblTherapytype = null;
+	private JLabel lblPriceperHour = null;
+	private JLabel lblTherapyduration = null;
+
+	/* buttons */
+	private JButton btnSearch = null;
+	private JButton btnSearchTherapy = null;
+	private JButton btnReset = null;
+	private JButton btnNewHorse = null;
+	private JButton btnDeleteHorse = null;
+	private JButton btnAddToCart = null;
+	private JButton btnCheckout = null;
+	private JButton btnUpdateHorse = null;
+
+	/* list fields */
+	private JComboBox cmbTherapytypes = null;
+
+	/* Table */
+	private JTable tabHorselist = null;
+	private HorseTableModel tabModel = null;
+
+	private Image horsePicture = null;
+
+	public HorseManager(TherapyManagementService service){
+		this.servicelayer = service;
+		this.init();
+		this.listAllHorses();
+	}
+
+	private void init() {
+		this.setLayout(new MigLayout());
+		this.add(createCenterPanel(), BorderLayout.CENTER);
+		this.add(createEastPanel(), BorderLayout.EAST);
+	}
+
+	private JPanel createCenterPanel(){
+		if( panCenter == null ){
+			panCenter = new JPanel(new MigLayout("wrap","[center]","[][][]"));
+
+			panCenter.add(createSearchPane(),"growx");
+			panCenter.add(createHorseListPane(),"growx,height 500");
+			panCenter.add(createHorseOperationPane(),"right");
+		}
+		return panCenter;
+
+	}
+
+	private JPanel createSearchPane(){
+		if( panSearch == null ){
+			panSearch = new JPanel(new MigLayout("wrap 2","[][]"));
+			panSearch.setBorder(BorderFactory.createTitledBorder("Pferdefilter"));
+
+			this.lblSearchHorseID = new JLabel(HorseManagerConfig.LBLHORSEID);
+			this.lblSearchName = new JLabel(HorseManagerConfig.LBLHORSENAME);
+			this.lblSearchPrice = new JLabel(HorseManagerConfig.LBLHORSEPRICE);
+			this.lblSearchTherapyType = new JLabel(HorseManagerConfig.LBLTHERAPYTYPE);
+
+
+			this.txtSearchHorseID = new JTextField();
+			this.txtSearchName = new JTextField();
+			this.txtSearchPrice = new JTextField();
+
+			this.cmbTherapytypes = new TherapytypeCombo(true);
+
+			panSearch.add(lblSearchHorseID);
+			panSearch.add(txtSearchHorseID,"growx");
+			panSearch.add(lblSearchName);
+			panSearch.add(txtSearchName,"growx");
+			panSearch.add(lblSearchPrice);
+			panSearch.add(txtSearchPrice,"growx");
+			panSearch.add(lblSearchTherapyType);
+			panSearch.add(cmbTherapytypes, "growx");
+			panSearch.add(createSearchControlPane(), "span");
+
+		}	
+		return panSearch;
+	}
+
+	private JPanel createSearchControlPane(){
+		if( panSearchControl == null ){
+			panSearchControl = new JPanel( new MigLayout() );
+			btnReset = new JButton(HorseManagerConfig.BTNRESET);
+			btnSearch = new JButton(HorseManagerConfig.BTNSEARCH);
+			btnSearchTherapy = new JButton(HorseManagerConfig.BTNSEARCHTHERAPY);
+
+			panSearchControl.add(btnReset,"sg 1");
+			panSearchControl.add(btnSearchTherapy,"sg 1");
+			panSearchControl.add(btnSearch, "sg 1");
+
+
+			btnReset.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					resetSearch();
+				}
+
+			});
+
+			btnSearchTherapy.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					performSearchByTherapy();
+				}
+
+			});
+
+			btnSearch.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					performSearch();
+				}
+
+			});
+
+
+		}
+		return panSearchControl;
+
+	}
+
+	private void performSearch() {
+		try {
+
+			HorseQueryValueParser packer = new HorseQueryValueParser();
+			packer.setHorseID(txtSearchHorseID.getText());
+			packer.setHorseTherapyprice(txtSearchPrice.getText());
+			packer.setHorseName(txtSearchName.getText() );
+			packer.setTherapytype((String)(cmbTherapytypes.getSelectedItem()));
+			horses = servicelayer.searchHorse(packer.getQuery());
+			tabModel.fillWithNewData(horses);
+
+		} catch (UnknownTherapytypeException e) {
+			// TODO notification dialog
+			System.err.println("ERROR - therapytype");
+		} catch (NoCorrectFormatException e) {
+			System.err.println("ERROR - format");
+		}
+	}
+
+	private void performSearchByTherapy() {
+		try {
+			HorseQueryValueParser packer = new HorseQueryValueParser();
+			packer.setTherapytype((String)(cmbTherapytypes.getSelectedItem()));
+			horses = servicelayer.listHorsebyTherapy(packer.getQuery());
+			tabModel.fillWithNewData(horses);
+
+		} catch (UnknownTherapytypeException e) {
+			//TODO notification dialog
+		} catch (NoTherapytypeGivenException e) {
+			// TODO notification dialog
+			e.printStackTrace();
+		} 
+
+	}
+
+	private void resetSearch() {
+		horses = servicelayer.listAllHorses();
+		tabModel.fillWithNewData(horses);
+
+	}
+	private JScrollPane createHorseListPane(){
+		if( panHorseList == null ){
+
+			tabHorselist =new JTable();
+			tabModel = new HorseTableModel();
+			tabHorselist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			tabHorselist.setModel(tabModel);
+			tabHorselist.setPreferredScrollableViewportSize(new Dimension(500, 70));
+			tabHorselist.setFillsViewportHeight(true);
+			tabHorselist.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+				@Override
+				public void valueChanged(ListSelectionEvent arg0) { setInformationPane( tabHorselist.getSelectedRow() );	}
+
+			});
+
+			panHorseList = new JScrollPane(tabHorselist);
+			panHorseList.setBorder(BorderFactory.createLoweredBevelBorder());
+		}
+
+		return panHorseList;
+	}
+
+	private void setInformationPane(int selectedRow) {
+		if( selectedRow >= 0 ){
+			Horse h = tabModel.getHorse(selectedRow);
+			txtHorseName.setText(h.getHorseName());
+			txtHorsePrice.setText("" + h.getHorseTherapyprice());
+			txtHorseTherapytype.setText(h.getHorseTherapytype().getText());
+
+			try {
+				horsePicture = ImageIO.read(new File(HorseManagerConfig.HORSEPICTUREPATH + h.getHorsePhoto()));
+			} catch (IOException e) {
+				try {
+					System.out.println("NOT FOUND!");
+					horsePicture = ImageIO.read(new File(HorseManagerConfig.HORSEPICTUREPATH + HorseManagerConfig.PATHTODUMMYPIC));
+				} catch (IOException e1) {}
+			}
+
+			if(horsePicture != null ){	
+				//TODO SIZE!!!
+				horsePicture = horsePicture.getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+				lblPicture.setIcon(new ImageIcon(horsePicture)); 
+			}
+		}else{
+			resetInformationPane();
+		}
+	}
+
+	private void resetInformationPane() {
+		txtHorseName.setText("");
+		txtHorsePrice.setText("");
+		txtHorseTherapytype.setText("");
+		try {
+			horsePicture = ImageIO.read(new File(HorseManagerConfig.HORSEPICTUREPATH + HorseManagerConfig.PATHTODUMMYPIC));
+			horsePicture = horsePicture.getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+			lblPicture.setIcon(new ImageIcon(horsePicture)); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
+	}
+
+	private Component createHorseOperationPane() {
+		if( panHorseOperation == null){
+			panHorseOperation = new JPanel(new MigLayout());
+			btnNewHorse = new JButton(HorseManagerConfig.BTNNEWHORSE);
+			btnDeleteHorse = new JButton(HorseManagerConfig.BTNDELHORSE);
+			btnUpdateHorse = new JButton(HorseManagerConfig.BTNUPDATEHORSE);
+
+			btnNewHorse.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) { openCreateHorseDialog(); }
+			});
+
+			btnDeleteHorse.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) { deleteHorse(); }
+			});
+
+			btnUpdateHorse.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) { openUpdateHorseDialog( ); }
+			});
+
+			panHorseOperation.add(btnDeleteHorse, "sg 1");
+			panHorseOperation.add(btnUpdateHorse, "sg 1");
+			panHorseOperation.add(btnNewHorse, "sg 1");
+		}
+		return panHorseOperation;
+	}
+
+	private void deleteHorse() {
+		int selrow =tabHorselist.getSelectedRow();
+		try {
+			Horse delHorse = tabModel.getHorse( selrow );
+			HorseQueryValueParser packer = new HorseQueryValueParser();
+			
+			packer.setHorseID("" + delHorse.getHorseID() );
+			servicelayer.deleteHorse(packer.getQuery());
+			tabModel.fillWithNewData(servicelayer.listAllHorses());
+		} catch (NoCorrectFormatException e) {
+			// TODO Notificatino dialog
+		} catch (NoHorseIdException e) {
+			// TODO Notification dialog
+		}
+	}
+
+	private void openUpdateHorseDialog() {
+		int selrow =tabHorselist.getSelectedRow();
+		System.out.println(selrow);
+		if(selrow >= 0 ){
+			Horse updateHorse = tabModel.getHorse( selrow );
+			new HorseDialog(updateHorse, servicelayer, true).setVisible(true);
+			tabModel.fillWithNewData(servicelayer.listAllHorses());
+		}else{
+			//TODO Notification dialog
+		}
+	}
+
+	private void openCreateHorseDialog() {
+		Horse newHorse = null;
+		new HorseDialog(newHorse, servicelayer, false).setVisible(true);
+		tabModel.fillWithNewData(servicelayer.listAllHorses());
+	}
+
+	private JPanel createEastPanel(){
+		if( panEast == null ){
+			panEast = new JPanel(new MigLayout( "",               
+					"[]",             
+					"[]:push[]"));
+
+			panEast.setBorder(BorderFactory.createTitledBorder("Therapieeinheiten"));
+			panEast.add(createHorseInformationPane(),"wrap,center");
+			panEast.add(createCartControlPane());
+
+		}
+		return panEast;
+	}
+
+	private Component createHorseInformationPane() {
+		if( panHorseInformation == null ){
+
+			panHorseInformation = new JPanel( new MigLayout("wrap",""));
+			try {
+				JPanel picpane = new JPanel();
+				lblPicture = new JLabel();
+				lblPicture.setPreferredSize(new Dimension(HorseManagerConfig.PICTUREHEIGHT,HorseManagerConfig.PICTUREWIDTH));
+
+				horsePicture = ImageIO.read(new File(HorseManagerConfig.HORSEPICTUREPATH + HorseManagerConfig.PATHTODUMMYPIC));
+				horsePicture = horsePicture.getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+				lblPicture.setIcon(new ImageIcon(horsePicture));
+
+				picpane.add(lblPicture);
+				panHorseInformation.add(picpane, "grow,center");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
+
+			lblHorseName = new JLabel(HorseManagerConfig.LBLHORSENAME);
+			lblTherapytype = new JLabel(HorseManagerConfig.LBLTHERAPYTYPE);
+			lblPriceperHour = new JLabel(HorseManagerConfig.LBLHORSEPRICE);
+			lblTherapyduration = new JLabel(HorseManagerConfig.LBLHORSEDURATION);
+
+			txtHorseName = new JTextField();
+			txtHorsePrice = new JTextField();
+			txtHorseTherapytype = new JTextField();
+			txtTherapyDuration = new JTextField();
+
+			txtHorseName.setEnabled(false);
+			txtHorsePrice.setEnabled(false);
+			txtHorseTherapytype.setEnabled(false);
+
+			panHorseInformation.add(lblHorseName);
+			panHorseInformation.add(txtHorseName,"grow");
+
+			panHorseInformation.add(lblTherapytype);
+			panHorseInformation.add(txtHorseTherapytype,"grow");
+
+			panHorseInformation.add(lblPriceperHour);
+			panHorseInformation.add(txtHorsePrice,"grow");
+
+			panHorseInformation.add(lblTherapyduration);
+			panHorseInformation.add(txtTherapyDuration,"grow");
+
+
+		}
+		return panHorseInformation;
+	}
+
+	private Component createCartControlPane() {
+		if(panCartOperation == null ){
+			panCartOperation = new JPanel( new MigLayout() );
+			btnAddToCart = new JButton(HorseManagerConfig.BTNADDTOCART);
+			btnCheckout = new JButton(HorseManagerConfig.BTNCHECKOUT);
+
+			btnAddToCart.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+
+			btnCheckout.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+
+			panCartOperation.add(btnAddToCart);
+			panCartOperation.add(btnCheckout);
+		}
+		return panCartOperation;
+	}
+
+	private void listAllHorses() {
+		horses = this.servicelayer.listAllHorses();
+		tabModel.fillWithNewData(horses);
+	}
+}

@@ -1,0 +1,13 @@
+package sepm.ss13.e0828.dao;
+
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Invoice;
+
+public interface InvoiceDAO {
+
+	public void createInvoice( Invoice newInvoice );
+	public List<Invoice> getInvoices();
+	
+	
+}

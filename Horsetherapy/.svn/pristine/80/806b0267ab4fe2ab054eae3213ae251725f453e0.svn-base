@@ -1,0 +1,42 @@
+package sepm.ss13.e0828.service;
+
+import java.util.Date;
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Invoice;
+import sepm.ss13.e0828.domain.TherapyUnit;
+
+public class InvoiceValidator {
+
+	public boolean validateInvoice(Invoice vInvoice){
+		boolean invoicevalid = true;
+		
+		if( vInvoice == null ) return (invoicevalid = false);
+
+		long date = vInvoice.getInvoiceDate();
+		String clientFirstname = vInvoice.getInvoiceClientfirstname();
+		String clientSurname = vInvoice.getInvoiceClientsurname();
+		String address = vInvoice.getInvoiceAddress();
+		String postcode = vInvoice.getInvoicePostcode();
+		String place = vInvoice.getInvoicePlace();
+		List<TherapyUnit> units = vInvoice.getTherapyunits();
+		
+		if( date != (new Date()).getTime() ) return (invoicevalid = false);
+		if( clientFirstname == null || clientFirstname.isEmpty() ) return (invoicevalid = false);
+		if( clientSurname == null || clientSurname.isEmpty() ) return (invoicevalid = false);
+		if( address == null || address.isEmpty() ) return (invoicevalid = false);
+		if( postcode == null || postcode.isEmpty() ) return (invoicevalid = false);
+		if( place == null || place.isEmpty() ) return (invoicevalid = false);
+		if( units == null || units.size() == 0 ) return (invoicevalid =false);
+		
+		
+		return invoicevalid;		
+	}
+	
+	public boolean validateInvoiceQuery(Invoice invoiceQuery){
+		if ( invoiceQuery == null ) return false;
+		return (invoiceQuery.getInvoiceID() >= 0);
+	}
+	
+
+}

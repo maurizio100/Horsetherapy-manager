@@ -1,0 +1,46 @@
+package sepm.ss13.e0828.dao.helper;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+
+public class DBQueryGenerationHelper {
+
+	private static final String STMTSELECT = "Select * from ";
+
+	private String[] fields = null;
+	private String entity = null;
+
+	public DBQueryGenerationHelper(String[] fields, String entity){
+		this.fields = fields;
+		this.entity = entity;
+	}
+
+	public String prepareSelectQuery(Object values[]) {
+
+		String query = STMTSELECT + entity;
+
+		if( fields != null ){
+			LinkedList<String> queryparts = new LinkedList<String>() ;
+
+			for( int i = 0; i < ( values.length); i++ ){
+				if( values[i] == null ){
+					queryparts.add(fields[i] + " = ?");
+				}
+			}
+
+			if( queryparts.size() > 0 ){
+				query += " where ";
+
+				Iterator<String> it = queryparts.iterator();
+				for( int i = 0; i < (queryparts.size() -1); i++ ){
+					query = it.next() + " AND ";
+				}
+				query = it.next();
+			}
+
+		}	
+
+		query += ";";
+		return query;
+	}
+}

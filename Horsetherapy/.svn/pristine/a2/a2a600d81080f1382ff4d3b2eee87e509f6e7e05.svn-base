@@ -1,0 +1,24 @@
+package sepm.ss13.e0828.service;
+
+import sepm.ss13.e0828.dao.HorseDAO;
+import sepm.ss13.e0828.dao.InvoiceDAO;
+
+public abstract class TherapyDaoManager {
+
+	private HorseDAO horsedao = null;
+	private InvoiceDAO invoicedao = null;
+	
+	public TherapyDaoManager(HorseDAO horsedao, InvoiceDAO invoicedao){
+		this.horsedao = horsedao;
+		this.invoicedao = invoicedao;
+	}
+	
+	public HorseDAO getHorsedao(){
+		return horsedao;
+	}
+	
+	public InvoiceDAO getInvoicedao(){
+		return invoicedao;
+	}
+	
+}

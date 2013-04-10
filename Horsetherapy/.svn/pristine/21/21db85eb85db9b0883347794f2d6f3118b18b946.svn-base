@@ -1,0 +1,11 @@
+package sepm.ss13.e0828.dao.exceptions;
+
+public class HorseNotExistentException extends Exception {
+
+	private static final String ERRORLABLE = "HorseNonExistentError: ";
+
+	public HorseNotExistentException(String message){
+		super(ERRORLABLE + message);
+	}
+	
+}

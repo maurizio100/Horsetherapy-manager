@@ -1,0 +1,16 @@
+package sepm.ss13.e0828.dao;
+
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.domain.HorseSearch;
+
+public interface HorseDAO {
+
+	public boolean createHorse( Horse newHorse );
+	public List<Horse> getHorses(HorseSearch searchfilter);
+	public boolean updateHorse( Horse updateValues );
+	public boolean deleteHorse( Horse delHorse );
+	
+	
+}

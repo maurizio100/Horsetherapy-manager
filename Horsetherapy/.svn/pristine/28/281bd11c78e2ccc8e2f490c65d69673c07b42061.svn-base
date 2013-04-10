@@ -1,0 +1,192 @@
+package sepm.ss13.e0828.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.domain.Therapytype;
+
+public class DBHorseDAO implements HorseDAO{
+
+	/*====================attributes===============*/
+	private PreparedStatement pstmt = null;
+	private Connection conn = null;
+
+	private String stmtCreate = "Insert into horse(horse_id, horse_name, horse_photo, horse_priceperhour, horse_therapytype, horse_deleted) " +
+			"Values(NULL,?,?,?,?,0);";
+	private String stmtGetallhorses = "Select * from horse where horse_deleted = 0";
+	
+	private String stmtDelete = "Update horse set horse_deleted = 1 where horse_id = ?";
+	private String stmtUpdate ="Update horse set horse_priceperhour = ?, horse_therapytype = ?, horse_photo = ? where horse_id = ?";
+			
+	@Override
+	public void createHorse(Horse newHorse) throws PersistenceException{
+
+		try{
+			//TODO LOGGER: Opening Connection
+			conn = Connector.getConnection();
+
+			pstmt = conn.prepareStatement(stmtCreate, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, newHorse.getHorseName());
+			pstmt.setString(2, newHorse.getHorsePhoto());
+			pstmt.setFloat(3, newHorse.getHorseTherapyprice());
+			pstmt.setString(4, newHorse.getHorseTherapytype().getText());
+			//TODO LOGGER: executing statement
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			if( conn == null ){
+				//TODO LOGGER: say connection couldnt be established while creating horse
+				throw new PersistenceException("Couldn't connect to datasource!");		
+			}
+
+			//TODO LOGGER: Problem with creating statement
+			throw new PersistenceException("There was an error creating new Horse!");
+
+		}finally{
+			//TODO LOGGER: closing preparedstatement
+			try { 
+				pstmt.close();
+				//TODO LOGGER: closing Connection
+				Connector.closeConnection();
+
+			}catch (SQLException e1) {}
+
+			pstmt = null;	
+			conn = null;
+		}
+	}
+	
+	@Override
+	public List<Horse> getHorses() throws PersistenceException{
+		ResultSet rs = null;
+		List<Horse> retList = null;
+		Horse h = null;
+		String query = "";
+		query = stmtGetallhorses; 
+
+		try{
+			//TODO LOGGER: open connection
+			conn = Connector.getConnection();
+			pstmt = conn.prepareStatement(query);
+			//TODO LOGGER: executing statement
+			rs = pstmt.executeQuery();
+
+			if( rs != null ){
+				retList = new LinkedList<Horse>();
+
+				while( rs.next() ){
+					h = new Horse();
+					h.setHorseID(rs.getInt(1));
+					h.setHorseName(rs.getString(2));
+					h.setHorsePhoto(rs.getString(3));
+					h.setHorseTherapyprice(rs.getFloat(4));
+					h.setHorseTherapytype(Therapytype.fromString(rs.getString(5)));
+					retList.add(h);
+				}
+
+			}
+		}catch ( SQLException e ){
+			if( conn == null ){
+				//TODO LOGGER: say connection couldnt be established while creating horse
+				throw new PersistenceException("Couldn't connect to datasource!");		
+			}
+
+			//TODO LOGGER: Problem with creating statement
+			throw new PersistenceException("There was an error getting Horses!");
+		}finally{
+			//TODO LOGGER: closing preparedstatement
+			try { 
+				rs.close();				
+				pstmt.close();
+				//TODO LOGGER: closing Connection
+				Connector.closeConnection();
+			}catch (SQLException e1) {}
+
+			pstmt = null;	
+			conn = null;
+		}
+
+		return retList;
+	}
+
+	@Override
+	public void updateHorse(Horse updateValues) throws PersistenceException{
+
+		String picture = updateValues.getHorsePhoto();
+		float price = updateValues.getHorseTherapyprice();
+		Therapytype type = updateValues.getHorseTherapytype();
+		int horseid = updateValues.getHorseID();
+		
+		try {			
+			//TODO LOGGER: open connection
+			conn = Connector.getConnection();
+			
+			pstmt = conn.prepareStatement(stmtUpdate);
+			pstmt.setString(1, picture);
+			pstmt.setFloat(2, price);
+			pstmt.setString(3, type.getText());
+			pstmt.setInt(4, horseid);
+			//TODO LOGGER: executing statement
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (SQLException e) {
+			if( conn == null ){
+				//TODO LOGGER: say connection couldnt be established while creating horse
+				throw new PersistenceException("Couldn't connect to datasource!");		
+			}
+
+			//TODO LOGGER: Problem with deleting statement
+			throw new PersistenceException("There was an error in deleting the Horse");
+		}finally{
+			//TODO LOGGER: closing preparedstatement
+			try { 
+				pstmt.close();
+				//TODO LOGGER: closing Connection
+				Connector.closeConnection();
+			}catch (SQLException e1) {}
+
+			pstmt = null;	
+			conn = null;
+		}
+	}
+
+	@Override
+	public void deleteHorse(Horse delHorse) throws PersistenceException{
+
+		try {			
+			//TODO LOGGER: open connection
+			conn = Connector.getConnection();
+
+			pstmt = conn.prepareStatement(stmtDelete);
+			pstmt.setInt(1, delHorse.getHorseID());
+			//TODO LOGGER: executing statement
+			pstmt.executeUpdate();
+
+			pstmt.close();
+		} catch (SQLException e) {
+			if( conn == null ){
+				//TODO LOGGER: say connection couldnt be established while creating horse
+				throw new PersistenceException("Couldn't connect to datasource!");		
+			}
+
+			//TODO LOGGER: Problem with deleting statement
+			throw new PersistenceException("There was an error in deleting the Horse");
+		}finally{
+			//TODO LOGGER: closing preparedstatement
+			try { 
+				pstmt.close();
+				//TODO LOGGER: closing Connection
+				Connector.closeConnection();
+			}catch (SQLException e1) {}
+
+			pstmt = null;	
+			conn = null;
+		}
+	}
+}

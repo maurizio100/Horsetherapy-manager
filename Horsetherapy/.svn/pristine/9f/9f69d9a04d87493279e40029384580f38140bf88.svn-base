@@ -1,0 +1,49 @@
+package sepm.ss13.e0828.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Connector {
+
+	private static Connection conn = null;
+	private static final String JDBCDRIVER = "org.hsqldb.jdbc.JDBCDriver";
+
+	private Connector(){}
+
+	public static void openConnection() throws SQLException{
+
+		if( conn == null ){
+			try {
+				Class.forName(JDBCDRIVER);
+
+				conn = DriverManager.getConnection(
+						"jdbc:hsqldb:hsql://localhost/horsetherapy", "SA", ""
+						);	
+				//TODO LOGGER: say that connection was established "Logger"
+			} catch (ClassNotFoundException e) {
+				System.err.println("Error: failed to load HSQL JDBC driver.");
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+
+	public static Connection getConnection() throws SQLException{
+		if( conn != null ){
+			return conn;
+		}else{
+			openConnection();
+			return conn;
+		}
+	}
+
+	public static void closeConnection() throws SQLException{
+		if( conn != null ){
+			conn.close();
+			// TODO LOGGER: say that connection is closed now "Logger"
+			conn = null;
+
+		}
+	}
+}

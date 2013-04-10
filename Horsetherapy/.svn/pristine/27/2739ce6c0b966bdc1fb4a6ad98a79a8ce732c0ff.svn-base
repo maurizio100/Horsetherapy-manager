@@ -1,0 +1,79 @@
+package sepm.ss13.e0828.domain;
+
+public class Horse {
+	
+	private int horseID =0;
+	private String horsePhoto ="";
+	private String horseName ="";
+	private float horseTherapyprice = 0.0f;
+	private Therapytype horseTherapytype = null;
+	private float usage = 0.0f;
+	
+	public enum Therapytype {
+		HIPPOTHERAPIE("Hippotherapie"),
+		VOLTIGIEREN("Heilpädagogisches Voltigieren"),
+		REITEN("Heilpädagogisches Reiten");
+
+		private String text;
+
+		Therapytype(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return this.text;
+		}
+
+		public static Therapytype fromString(String text) {
+			if (text != null) {
+				for (Therapytype t : Therapytype.values()) {
+					if (text.equalsIgnoreCase(t.text)) {
+						return t;
+					}
+				}
+			}
+			return null;
+		}
+
+	}	
+	
+	public int getHorseID() {
+		return horseID;
+	}
+	public void setHorseID(int horseID) {
+		this.horseID = horseID;
+	}
+	public String getHorsePhoto() {
+		return horsePhoto;
+	}
+	public float getUsage(){
+		return usage;
+	}
+	
+	public void setHorsePhoto(String horsePhoto) {
+		this.horsePhoto = horsePhoto;
+	}
+	public String getHorseName() {
+		return horseName;
+	}
+	public void setHorseName(String horseName) {
+		this.horseName = horseName;
+	}
+	public float getHorseTherapyprice() {
+		return horseTherapyprice;
+	}
+	public void setHorseTherapyprice(float horseTherapyprice) {
+		this.horseTherapyprice = horseTherapyprice;
+	}
+	public Therapytype getHorseTherapytype() {
+		return horseTherapytype;
+	}
+	public void setHorseTherapytype(Therapytype horseTherapytype) {
+		this.horseTherapytype = horseTherapytype;
+	}
+	public void setHorseUsage(float usage) {
+		this.usage = usage;
+	}
+	
+
+}

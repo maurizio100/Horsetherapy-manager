@@ -1,0 +1,146 @@
+package sepm.ss13.e0828.gui;
+
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.service.TherapyManagementService;
+
+public class HorseDialog extends JDialog {
+
+	private Horse newHorse =null;
+	private JPanel panAttributes = null;
+	private JPanel panButtonpane = null;
+	
+	private JLabel lblName = null;
+	private JLabel lblPrice = null;
+	private JLabel lblTherapyType = null;
+	private JLabel lblPhoto = null;
+	private JLabel lblMessage = null;
+	
+	private JTextField txtName = null;
+	private JTextField txtPrice = null;
+	private JComboBox cmbTherapytypes = null;
+	
+	private JButton btnOK = null;
+	private JButton btnCancel = null;
+	private JTextField txtPhoto = null;
+	
+	private TherapyManagementService servicelayer = null;
+	private boolean update;
+	
+	public HorseDialog( Horse newHorse, TherapyManagementService servicelayer,boolean update  ){
+		this.servicelayer = servicelayer;
+		this.newHorse = new Horse();
+		this.update = update;
+		this.init();
+
+		if( update ){ fillFieldsWithHorseInfromation( newHorse ); }
+	}
+	
+	
+	private void fillFieldsWithHorseInfromation(Horse newHorse2) {
+		// TODO Auto-generated method stub	
+	}
+
+	private void init(){
+		this.setBounds(300, 250,400,250);
+		this.setResizable(false);
+		
+		if( update ){this.setTitle(HorseManagerConfig.DIAUPDATEHORSETITLE);}
+		else{this.setTitle(HorseManagerConfig.DIANEWHORSETITLE);}
+		
+		this.setLayout(new MigLayout("wrap","[grow]","[][]"));
+		this.setModal(true);
+		this.add(createHorseAttributeFields(),"grow");
+		this.add(createButtonPane(),"right");
+	}
+
+	private Component createButtonPane() {
+		if( panButtonpane == null ){
+			panButtonpane = new JPanel( new MigLayout() );
+			btnOK = new JButton( HorseManagerConfig.BTNPROCESS );
+			btnCancel = new JButton( HorseManagerConfig.BTNCANCEL );
+
+			btnOK.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if( update ){ performUpdate(); }
+					else{ performCreation(); }
+				}
+
+			});
+			
+			btnCancel.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					performDialogClose();
+				}
+			});	
+			
+			panButtonpane.add(btnCancel,"sg 1");
+			panButtonpane.add(btnOK,"sg 1");
+			
+		}
+		return panButtonpane;
+	}
+
+	private JPanel createHorseAttributeFields(){
+		if( panAttributes == null ){
+			panAttributes = new JPanel(new MigLayout("wrap 2","[][]"));
+			panAttributes.setBorder(BorderFactory.createTitledBorder(HorseManagerConfig.NEWHORSEINPUT));
+
+			this.lblName = new JLabel(HorseManagerConfig.LBLHORSENAME);
+			this.lblPrice = new JLabel(HorseManagerConfig.LBLHORSEPRICE);
+			this.lblTherapyType = new JLabel(HorseManagerConfig.LBLTHERAPYTYPE);
+			this.lblPhoto = new JLabel(HorseManagerConfig.LBLPHOTO);
+			
+			this.lblMessage = new JLabel("FAIL!");
+			lblMessage.setFont(new Font("sans serif", Font.BOLD, 15));
+			
+			this.txtName = new JTextField();
+			this.txtPrice = new JTextField();
+			this.cmbTherapytypes = new TherapytypeCombo();
+			this.txtPhoto  = new JTextField();
+			
+			panAttributes.add(lblName);
+			panAttributes.add(txtName,"growx");
+			panAttributes.add(lblTherapyType);
+			panAttributes.add(cmbTherapytypes,"growx");
+			panAttributes.add(lblPrice);
+			panAttributes.add(txtPrice,"growx");
+			panAttributes.add(lblPhoto);
+			panAttributes.add(txtPhoto, "growx");
+			panAttributes.add(lblMessage, "span 2");
+		}	
+		return panAttributes;		
+	}
+	
+	private void performCreation() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void performUpdate() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void performDialogClose() {
+		
+	}
+
+
+}

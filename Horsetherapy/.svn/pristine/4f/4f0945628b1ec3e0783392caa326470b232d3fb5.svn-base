@@ -1,0 +1,71 @@
+package sepm.ss13.e0828.service;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Invoice;
+import sepm.ss13.e0828.domain.TherapyUnit;
+
+/** This is a helper class that has the task to validate
+ * every object that has to do with the Invoice entity. This
+ * includes creation and selection of a particular invoice
+ * @author Maurizio Rinder u0828852
+ */
+
+public class InvoiceValidator extends AbstractValidator {
+
+	/** Validates if invoice is valid for adding it to the persistence
+	 * unite
+	 * @param vInvoice the Invoice that is going to be validated
+	 * @return returns true if the Horse is valid, false otherwise
+	 */
+	public boolean validateInvoice(Invoice vInvoice){
+		boolean invoicevalid = true;
+
+		if( vInvoice == null ) return (invoicevalid = false);
+
+		long datemillis = vInvoice.getInvoiceDate();
+		String clientFirstname = vInvoice.getInvoiceClientfirstname();
+		String clientSurname = vInvoice.getInvoiceClientsurname();
+		String address = vInvoice.getInvoiceAddress();
+		String postcode = vInvoice.getInvoicePostcode();
+		String place = vInvoice.getInvoicePlace();
+		List<TherapyUnit> units = vInvoice.getTherapyunits();
+
+		invoicevalid = isValidInvoiceDate(datemillis) &&
+				!isStringEmpty(clientFirstname) &&
+				!isStringEmpty(clientSurname) &&
+				!isStringEmpty(postcode) &&
+				!isStringEmpty(address) &&
+				!isStringEmpty(place) && 
+				!isTherapyUnitsEmpty(units) ;
+
+		return invoicevalid;		
+	}
+	/** Checks if the the values needed for selecting details of an invoice are given
+	 * 
+	 * @param invoiceQuery the data for the selection. This object is going to be validated.
+	 * @return returns true if object is valid which means that there is at least a valid id, false otherwise
+	 */
+	public boolean validateInvoiceQuery(Invoice invoiceQuery){
+		if ( invoiceQuery == null ) return false;
+		return !(invoiceQuery.getInvoiceID() < 0);
+	}
+
+	private boolean isTherapyUnitsEmpty(List<TherapyUnit> units){
+		return (units == null || units.size() <= 0);
+	}
+
+	private boolean isValidInvoiceDate( long millis ){
+		Calendar c1 = GregorianCalendar.getInstance();
+		c1.setTimeInMillis(millis);
+		
+		Calendar c2 = GregorianCalendar.getInstance();
+		c2.setTimeInMillis(new Date().getTime());
+		
+		return isSameDateWithoutTime(c1, c2);
+	}
+	
+}

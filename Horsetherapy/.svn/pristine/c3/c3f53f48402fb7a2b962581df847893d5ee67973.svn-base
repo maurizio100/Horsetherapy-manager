@@ -1,0 +1,13 @@
+package sepm.ss13.e0828.gui.exception;
+
+import sepm.ss13.e0828.gui.HorseManagerConfig;
+
+public class UnknownTherapytypeException extends Exception {
+
+	private static final String ERRMSG = HorseManagerConfig.ERRUNKNOWNTHERAPYTYPE;
+	
+	public UnknownTherapytypeException(){
+		super(ERRMSG);
+	}
+	
+}

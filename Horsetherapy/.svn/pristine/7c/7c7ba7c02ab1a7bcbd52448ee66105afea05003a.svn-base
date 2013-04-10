@@ -1,0 +1,70 @@
+package sepm.ss13.e0828.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import org.apache.log4j.Logger;
+
+/** This class provides the main functionalities for connecting
+ * to a hsqldb Database. It is implemented as a singleton.
+ * @author Maurizio Rinder u0828852 */
+
+public class Connector {
+
+	/** Logger for information-output */
+	private static Logger logger = Logger.getLogger(Connector.class);
+	private static Connection conn = null;
+	private static final String JDBCDRIVER = "org.hsqldb.jdbc.JDBCDriver";
+
+	private Connector(){}
+
+	/** 
+	 * Opens the Databaseconnection
+	 * @throws SQLException when there was a problem connecting to the database
+	 */
+	private static void openConnection() throws SQLException{
+		logger.info("Connecting to databse.");
+		
+		if( conn == null ){
+			try {
+				Class.forName(JDBCDRIVER);
+
+				conn = DriverManager.getConnection(
+						"jdbc:hsqldb:hsql://localhost/horsetherapy", "SA", ""
+						);
+			} catch (ClassNotFoundException e) {
+				System.err.println("Error: failed to load HSQL JDBC driver.");
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+
+	/** 
+	 * Connects to the database and returns a Connection object
+	 * @return The Connection conn to the database
+	 * @throws SQLException when there was a problem connecting to the database
+	 */
+	public static Connection getConnection() throws SQLException{
+		if( conn != null ){
+			return conn;
+		}else{
+			openConnection();
+			return conn;
+		}
+	}
+
+	/**
+	 * Closes the database connection
+	 * @throws SQLException when there was a problem during closing
+	 */
+	
+	public static void closeConnection() throws SQLException{
+		if( conn != null ){
+			logger.info("Closing connection.");
+			conn.close();
+			conn = null;
+
+		}
+	}
+}

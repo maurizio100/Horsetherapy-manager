@@ -1,0 +1,19 @@
+package sepm.ss13.e0828.domain;
+
+public enum Therapytype {
+	HIPPOTHERAPIE{
+		public String toString(){
+			return "Hippotherapie";
+		}
+	},
+	VOLTIGIEREN{
+		public String toString(){
+			return "Heilpädagogisches Voltigieren";
+		}
+	},
+	REITEN{
+		public String toString(){
+			return "Heilpädagogisches Reiten";
+		}
+	}
+}

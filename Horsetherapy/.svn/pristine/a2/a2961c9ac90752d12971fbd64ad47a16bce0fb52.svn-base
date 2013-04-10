@@ -1,0 +1,31 @@
+package sepm.ss13.e0828.service;
+
+import java.util.List;
+
+import sepm.ss13.e0828.dao.exceptions.HorseNotExistentException;
+import sepm.ss13.e0828.dao.exceptions.NoClassGivenException;
+import sepm.ss13.e0828.dao.exceptions.UnacceptedValueException;
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.domain.HorseQueryData;
+import sepm.ss13.e0828.domain.Invoice;
+import sepm.ss13.e0828.service.exception.DataSourceAccessException;
+import sepm.ss13.e0828.service.exception.LessValuesException;
+import sepm.ss13.e0828.service.exception.NoHorseIdException;
+import sepm.ss13.e0828.service.exception.NoInvoiceIDException;
+import sepm.ss13.e0828.service.exception.NoTherapytypeGivenException;
+import sepm.ss13.e0828.service.exception.NoUpdateValuesException;
+
+public interface TherapyManagementService {
+
+	public void createHorse(HorseQueryData newHorse) throws LessValuesException, DataSourceAccessException, NoClassGivenException, UnacceptedValueException;
+	public void updateHorse(HorseQueryData queryValues) throws DataSourceAccessException, HorseNotExistentException, NoClassGivenException, UnacceptedValueException;
+	public void deleteHorse( HorseQueryData deleteHorse ) throws  NoHorseIdException, DataSourceAccessException, HorseNotExistentException;
+	public List<Horse> searchHorse(HorseQueryData queryValues) throws DataSourceAccessException, NoClassGivenException;
+	public List<Horse> listHorsebyTherapy(HorseQueryData queryValues) throws NoTherapytypeGivenException, DataSourceAccessException, NoClassGivenException;
+	public List<Horse> listAllHorses() throws DataSourceAccessException;
+	
+	
+	public void createInvoice(Invoice newInvoice) throws LessValuesException, DataSourceAccessException;
+	public Invoice getInvoiceinformation(Invoice invoiceid) throws NoInvoiceIDException, DataSourceAccessException;
+	public List<Invoice> listAllInvoices() throws DataSourceAccessException;
+}

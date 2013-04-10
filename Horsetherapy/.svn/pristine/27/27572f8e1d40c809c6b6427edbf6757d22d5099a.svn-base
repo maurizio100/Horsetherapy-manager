@@ -1,0 +1,18 @@
+package sepm.ss13.e0828.domain;
+
+public class HorseDeleteData {
+
+	private int horseID = -1;
+	
+	public HorseDeleteData(int id){
+		horseID = id;	
+	}
+	
+	public void setHorseID(int id){
+		horseID = id;
+	}
+	
+	public int getHorseID(){
+		return horseID;
+	}
+}

@@ -1,0 +1,18 @@
+package sepm.ss13.e0828.dao;
+
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Horse;
+import sepm.ss13.e0828.domain.HorseDeleteData;
+import sepm.ss13.e0828.domain.HorseQueryData;
+
+public interface HorseDAO {
+	
+	public void createHorse( Horse newHorse ) throws PersistenceException, NoClassGivenException;
+	public void updateHorse( HorseQueryData updateValues ) throws PersistenceException, NoClassGivenException, HorseNotExistentException;
+	public void deleteHorse( HorseDeleteData delHorse ) throws PersistenceException, NoClassGivenException, HorseNotExistentException;	
+	public List<Horse> getHorses() throws PersistenceException;
+	public List<Horse> getHorsesBy( HorseQueryData searchValues ) throws PersistenceException, NoClassGivenException;
+	
+	
+}

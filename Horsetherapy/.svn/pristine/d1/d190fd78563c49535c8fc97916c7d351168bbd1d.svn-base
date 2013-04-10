@@ -1,0 +1,51 @@
+package sepm.ss13.e0828.domain;
+
+public class Client {
+
+	private int clientId = 0;
+	private String clientFirstname ="";
+	private String clientSurname ="";
+	private String clientAddress ="";
+	private String clientPostcode ="";
+	private String clientPlace ="";
+	
+	/* Constructor comes */
+	
+	public int getClientId() {
+		return clientId;
+	}
+	public void setClientId(int clientId) {
+		this.clientId = clientId;
+	}
+	public String getClientFirstname() {
+		return clientFirstname;
+	}
+	public void setClientFirstname(String clientFirstname) {
+		this.clientFirstname = clientFirstname;
+	}
+	public String getClientSurname() {
+		return clientSurname;
+	}
+	public void setClientSurname(String clientSurname) {
+		this.clientSurname = clientSurname;
+	}
+	public String getClientAddress() {
+		return clientAddress;
+	}
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+	public String getClientPostcode() {
+		return clientPostcode;
+	}
+	public void setClientPostcode(String clientPostcode) {
+		this.clientPostcode = clientPostcode;
+	}
+	public String getClientPlace() {
+		return clientPlace;
+	}
+	public void setClientPlace(String clientPlace) {
+		this.clientPlace = clientPlace;
+	}
+
+}

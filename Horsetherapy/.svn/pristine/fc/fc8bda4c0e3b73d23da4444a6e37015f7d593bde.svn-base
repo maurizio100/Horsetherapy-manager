@@ -1,0 +1,41 @@
+package sepm.ss13.e0828.domain;
+
+public class TherapyUnit {
+
+	private int therapyID =0;
+	private int therapyHorseID = -1;
+	private float therapyHours =0.0f;
+	private float therapyPrice =0.0f;
+	private Therapytype therapyType = null;
+	
+	public int getTherapyId() {
+		return therapyID;
+	}
+	public void setTherapyId(int therapyId) {
+		this.therapyID = therapyId;
+	}
+	public float getTherapyHours() {
+		return therapyHours;
+	}
+	public void setTherapyHours(float therapyHours) {
+		this.therapyHours = therapyHours;
+	}
+	public float getTherapyPrice() {
+		return therapyPrice;
+	}
+	public void setTherapyPrice(float therapyPrice) {
+		this.therapyPrice = therapyPrice;
+	}
+	public int getTherapyHorseID() {
+		return therapyHorseID;
+	}
+	public void setTherapyHorse(int therapyHorseID) {
+		this.therapyHorseID = therapyHorseID;
+	}
+	public Therapytype getTherapyType() {
+		return therapyType;
+	}
+	public void setTherapyType(Therapytype therapyType) {
+		this.therapyType = therapyType;
+	}
+}

@@ -1,0 +1,11 @@
+package sepm.ss13.e0828.dao.exceptions;
+
+public class UnacceptedValueException extends Exception {
+
+private static final String UACCEPTEDVALUEMESSAGE = "Error: This value cant be accepted as it doesn't match the context";
+	
+	public UnacceptedValueException() {
+		super(UACCEPTEDVALUEMESSAGE);
+	}
+	
+}

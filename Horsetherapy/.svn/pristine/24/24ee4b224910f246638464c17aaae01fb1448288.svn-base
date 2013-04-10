@@ -1,0 +1,55 @@
+package sepm.ss13.e0828.domain;
+
+import java.util.Date;
+
+public class Invoice {
+
+	private int invoiceId =0;
+	private Date invoiceDate =null;
+	private String invoiceAddress ="";
+	private String invoicePostcode ="";
+	private String invoicePlace ="";
+
+	/* Constructor comes */
+
+	
+	public Client getTherapyOwner() {
+		return therapyOwner;
+	}
+	public void setTherapyOwner(Client therapyOwner) {
+		this.therapyOwner = therapyOwner;
+	}
+	private Client therapyOwner =null;
+	
+	public int getInvoiceId() {
+		return invoiceId;
+	}
+	public void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+	public String getInvoiceAddress() {
+		return invoiceAddress;
+	}
+	public void setInvoiceAddress(String invoiceAddress) {
+		this.invoiceAddress = invoiceAddress;
+	}
+	public String getInvoicePostcode() {
+		return invoicePostcode;
+	}
+	public void setInvoicePostcode(String invoicePostcode) {
+		this.invoicePostcode = invoicePostcode;
+	}
+	public String getInvoicePlace() {
+		return invoicePlace;
+	}
+	public void setInvoicePlace(String invoicePlace) {
+		this.invoicePlace = invoicePlace;
+	}
+	
+}

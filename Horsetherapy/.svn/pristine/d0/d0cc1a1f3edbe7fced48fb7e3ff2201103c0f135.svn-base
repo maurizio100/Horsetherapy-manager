@@ -1,0 +1,28 @@
+package sepm.ss13.e0828.gui;
+
+public class TherapyListingConfig {
+
+	private TherapyListingConfig() {}
+	
+	public static final String DIATHERAPYUNITLISTING = "Therapieeinheitenauflistung";
+	public static final String BTNPROCESS = "Rechnung Erstellen";
+	public static final String BTNCANCEL = "Zur\u00FCck";
+	public static final String BTNCLOSE = "Schliessen";
+	public static final String BTNDELETE = "Therapieeinheit l\u00F6schen";
+
+	public static final String LBLCLIENTFIRSTNAME = "Vorname";
+	public static final String LBLCLIENTSURNAME = "Nachname";
+	public static final String LBLADDRESS = "Adresse";
+	public static final String LBLPOSTCODE = "Postleitzahl";
+	public static final String LBLPLACE = "Ort";
+	
+	
+	public static final String[] THERAPYUNITLISTHEADERS ={
+		"Pferd", "Therapie", "Dauer", "Preis/h", "Preis gesamt"
+	};
+
+	public static final int THERAPYLISTCOLS = THERAPYUNITLISTHEADERS.length;
+	public static final String ERRSELECTUNIT = "Sie m\u00FCssen erst eine Therapieeinheit ausw\u00E4hlen!";
+	public static final String MSGPROCESSSUCCESSFUL = "Die Rechnung wurde erfolgreich erstellt!";
+	
+}

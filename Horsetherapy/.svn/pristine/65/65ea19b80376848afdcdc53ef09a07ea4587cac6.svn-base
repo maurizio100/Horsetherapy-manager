@@ -1,0 +1,16 @@
+package sepm.ss13.e0828.dao;
+
+import java.util.List;
+
+import sepm.ss13.e0828.domain.Horse;
+
+public interface HorseDAO {
+	
+	public void createHorse( Horse newHorse ) throws PersistenceException;
+	public void updateHorse( Horse updateValues ) throws PersistenceException;
+	public void deleteHorse( Horse delHorse ) throws PersistenceException;	
+	public List<Horse> getHorses() throws PersistenceException;
+	
+	
+	
+}
